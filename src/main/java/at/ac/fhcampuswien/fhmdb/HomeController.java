@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -32,6 +33,12 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXComboBox genreComboBox;
+
+    @FXML
+    public JFXComboBox releaseYearComboBox;
+
+    @FXML
+    public JFXComboBox ratingComboBox;
 
     @FXML
     public JFXButton sortBtn;
@@ -63,6 +70,9 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
+
+        releaseYearComboBox.setPromptText("Filter by Release Year");
+        ratingComboBox.setPromptText("Filter by Rating");
     }
 
     // sort movies based on sortedState
@@ -116,6 +126,14 @@ public class HomeController implements Initializable {
 
         if (genre != null && !genre.toString().equals("No filter")) {
             filteredMovies = filterByGenre(filteredMovies, Genre.valueOf(genre.toString()));
+        }
+
+        if (searchQuery.equals("") &&  genreComboBox.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Choose Filter");
+            //Setting the content of the dialog
+            alert.setContentText("Please choose a Filter!");
+            alert.show();
         }
 
         observableMovies.clear();
