@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,15 +24,17 @@ public class Movie {
         this.genres = genres;
     }
 
+
+
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof Movie other)) {
+        if (!(obj instanceof Movie other)) {
             return false;
         }
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
@@ -51,8 +52,78 @@ public class Movie {
         return genres;
     }
 
+    private static Genre[] mapGenres(JSONArray genresArray) {
+        Genre[] genres = new Genre[genresArray.length()];
+        for (int i = 0; i < genresArray.length(); i++) {
+            String genreString = genresArray.getString(i).toUpperCase();
+            genres[i] = Genre.valueOf(genreString);
+        }
+        return genres;
+    }
 
-    public static String apiRequest (String queryText, String genre, String releaseYear, String rating) throws IOException {
+    public static List<Movie> apiRequestInitial() {
+        List<Movie> movies = new ArrayList<>();
+        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            StringBuilder response = new StringBuilder();
+            String output;
+
+            while ((output = br.readLine()) != null) {
+                response.append(output);
+            }
+
+            conn.disconnect();
+
+            // parse the response JSON and extract the desired fields
+            JSONArray moviesJSONArray = new JSONArray(response.toString());
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 0; i < moviesJSONArray.length(); i++) {
+                JSONObject movie = moviesJSONArray.getJSONObject(i);
+                String title = movie.getString("title");
+                String descriptionReturned = movie.getString("description");
+                String genreReturned = movie.getJSONArray("genres").join(", ");
+                String releaseYearReturned = String.valueOf(movie.getInt("releaseYear"));
+                String ratingReturned = String.valueOf(movie.getDouble("rating"));
+
+                movies.add(new Movie(
+                        movie.getString("title"),
+                        movie.getString("description"),
+                        List.of(mapGenres(movie.getJSONArray("genres")))));
+
+                result.append(title).append("\n")
+                        .append(descriptionReturned).append("\n")
+                        .append(genreReturned).append("\n")
+                        .append(releaseYearReturned).append("\n")
+                        .append(ratingReturned).append("\n\n");
+            }
+
+            return movies;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    public static List<Movie> apiRequest (String queryText, String genre, String releaseYear, String rating) throws IOException {
 
         String urlString = "http://prog2.fh-campuswien.ac.at/movies?";
 
@@ -74,6 +145,7 @@ public class Movie {
 
         System.out.println(urlString);
 
+        List<Movie> movies = new ArrayList<>();
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -94,25 +166,31 @@ public class Movie {
             conn.disconnect();
 
             // parse the response JSON and extract the desired fields
-            JSONArray movies = new JSONArray(response.toString());
+            JSONArray moviesJSONArray = new JSONArray(response.toString());
             StringBuilder result = new StringBuilder();
 
-            for (int i = 0; i < movies.length(); i++) {
-                JSONObject movie = movies.getJSONObject(i);
+            for (int i = 0; i < moviesJSONArray.length(); i++) {
+                JSONObject movie = moviesJSONArray.getJSONObject(i);
                 String title = movie.getString("title");
-                String description = movie.getString("description");
-                genre = movie.getJSONArray("genres").join(", ");
-                releaseYear = String.valueOf(movie.getInt("releaseYear"));
-                rating = String.valueOf(movie.getDouble("rating"));
+                String descriptionReturned = movie.getString("description");
+                String genreReturned = movie.getJSONArray("genres").join(", ");
+                String releaseYearReturned = String.valueOf(movie.getInt("releaseYear"));
+                String ratingReturned = String.valueOf(movie.getDouble("rating"));
+
+                movies.add(new Movie(
+                        movie.getString("title"),
+                        movie.getString("description"),
+                        List.of(mapGenres(movie.getJSONArray("genres")))));
 
                 result.append(title).append("\n")
-                        .append(description).append("\n")
-                        .append(genre).append("\n")
-                        .append(releaseYear).append("\n")
-                        .append(rating).append("\n\n");
+                        .append(descriptionReturned).append("\n")
+                        .append(genreReturned).append("\n")
+                        .append(releaseYearReturned).append("\n")
+                        .append(ratingReturned).append("\n\n");
             }
 
-            return result.toString();
+            return movies;
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
