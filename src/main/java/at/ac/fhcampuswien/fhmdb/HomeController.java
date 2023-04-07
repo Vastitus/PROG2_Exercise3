@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
@@ -70,6 +71,23 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
+
+        //New ComboBoxes
+        releaseYearComboBox.getItems().add(2022);
+        releaseYearComboBox.getItems().add(2021);
+        releaseYearComboBox.getItems().add(2020);
+        releaseYearComboBox.getItems().add(2019);
+
+        ratingComboBox.getItems().add("0");
+        ratingComboBox.getItems().add("1");
+        ratingComboBox.getItems().add("2");
+        ratingComboBox.getItems().add("3");
+        ratingComboBox.getItems().add("4");
+        ratingComboBox.getItems().add("5");
+        ratingComboBox.getItems().add("6");
+        ratingComboBox.getItems().add("7");
+        ratingComboBox.getItems().add("8");
+        ratingComboBox.getItems().add("9");
 
         releaseYearComboBox.setPromptText("Filter by Release Year");
         ratingComboBox.setPromptText("Filter by Rating");
@@ -141,10 +159,18 @@ public class HomeController implements Initializable {
     }
 
     public void searchBtnClicked(ActionEvent actionEvent) {
-        String searchQuery = searchField.getText().trim().toLowerCase();
+      /*  String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
 
-        applyAllFilters(searchQuery, genre);
+        applyAllFilters(searchQuery, genre);*/
+
+
+        try {
+            System.out.println(Movie.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                    String.valueOf(releaseYearComboBox.getSelectionModel().getSelectedItem()), String.valueOf(ratingComboBox.getSelectionModel().getSelectedItem())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if(sortedState != SortedState.NONE) {
             sortMovies();
