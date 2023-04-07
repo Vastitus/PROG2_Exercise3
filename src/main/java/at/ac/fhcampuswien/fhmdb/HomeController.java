@@ -77,6 +77,9 @@ public class HomeController implements Initializable {
         releaseYearComboBox.getItems().add(2021);
         releaseYearComboBox.getItems().add(2020);
         releaseYearComboBox.getItems().add(2019);
+        releaseYearComboBox.getItems().add(2015);
+        releaseYearComboBox.getItems().add(2010);
+        releaseYearComboBox.getItems().add(1999);
 
         ratingComboBox.getItems().add("0");
         ratingComboBox.getItems().add("1");
@@ -158,16 +161,21 @@ public class HomeController implements Initializable {
         observableMovies.addAll(filteredMovies);
     }
 
-    public void searchBtnClicked(ActionEvent actionEvent) {
+    public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
       /*  String searchQuery = searchField.getText().trim().toLowerCase();
         Object genre = genreComboBox.getSelectionModel().getSelectedItem();
 
         applyAllFilters(searchQuery, genre);*/
 
-
         try {
-            System.out.println(Movie.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+
+            System.out.println(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
                     String.valueOf(releaseYearComboBox.getSelectionModel().getSelectedItem()), String.valueOf(ratingComboBox.getSelectionModel().getSelectedItem())));
+
+            observableMovies.clear();
+            observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                    String.valueOf(releaseYearComboBox.getSelectionModel().getSelectedItem()), String.valueOf(ratingComboBox.getSelectionModel().getSelectedItem())));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
