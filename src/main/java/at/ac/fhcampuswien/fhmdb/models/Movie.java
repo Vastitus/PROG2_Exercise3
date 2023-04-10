@@ -87,7 +87,7 @@ public class Movie {
             conn.setRequestMethod("GET");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                throw new RuntimeException("Error: " + conn.getResponseCode());
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));

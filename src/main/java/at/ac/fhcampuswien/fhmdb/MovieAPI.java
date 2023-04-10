@@ -73,11 +73,11 @@ public class MovieAPI {
 
         }
 
-        if (!genre.equals("null") && !genre.equals("No filter") && !genre.equals("Filter by Genre") && !queryText.equals("")) {
+        if (!genre.equals("null") && !genre.equals("No filter") && !genre.equals("Filter by Genre") && !genre.equals("")) {
             urlBuilder.addQueryParameter("genre", genre);
         }
 
-        if (!releaseYear.equals("null") && !genre.equals("Filter by Release Year")) {
+        if (!releaseYear.equals("null") && !releaseYear.equals("Filter by Release Year") && !releaseYear.equals(""))  {
             urlBuilder.addQueryParameter("releaseYear", releaseYear);
         }
 
@@ -97,7 +97,7 @@ public class MovieAPI {
             conn.setRequestMethod("GET");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+                throw new RuntimeException("Error: " + conn.getResponseCode());
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
