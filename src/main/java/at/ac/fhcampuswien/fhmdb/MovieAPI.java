@@ -121,7 +121,8 @@ public class MovieAPI {
                         movie.getString("title"),
                         movie.getString("description"),
                         List.of(mapGenres(movie.getJSONArray("genres"))),
-                        String.valueOf(movie.getInt("releaseYear"))
+                        String.valueOf(movie.getInt("releaseYear")),
+                        String.valueOf(movie.getDouble("rating"))
                 ));
 
             }

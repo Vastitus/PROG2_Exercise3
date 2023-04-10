@@ -22,11 +22,14 @@ public class Movie {
 
     private final String releaseYear;
 
-    public Movie(String title, String description, List<Genre> genres, String releaseYear) {
+    private final String rating;
+
+    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating) {
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
+        this.rating = rating;
     }
 
 
@@ -57,6 +60,14 @@ public class Movie {
         return genres;
     }
 
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
     public static Genre[] mapGenres(JSONArray genresArray) {
         Genre[] genres = new Genre[genresArray.length()];
         for (int i = 0; i < genresArray.length(); i++) {
@@ -66,9 +77,6 @@ public class Movie {
         return genres;
     }
 
-    public String getReleaseYear() {
-        return releaseYear;
-    }
 
     public static List<Movie> apiRequestInitial() {
         List<Movie> movies = new ArrayList<>();
@@ -104,7 +112,8 @@ public class Movie {
                         movie.getString("title"),
                         movie.getString("description"),
                         List.of(mapGenres(movie.getJSONArray("genres"))),
-                        String.valueOf(movie.getInt("releaseYear"))
+                        String.valueOf(movie.getInt("releaseYear")),
+                        String.valueOf(movie.getDouble("rating"))
 
                         ));
             }

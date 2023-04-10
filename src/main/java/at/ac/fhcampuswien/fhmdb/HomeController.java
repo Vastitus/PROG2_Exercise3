@@ -36,11 +36,11 @@ public class HomeController implements Initializable {
     public JFXComboBox genreComboBox;
 
     /*@FXML
-    public JFXComboBox releaseYearComboBox;
+    public JFXComboBox releaseYearComboBox; */
 
     @FXML
     public JFXComboBox ratingComboBox;
-    */
+
     @FXML
     public TextField ratingTextField;
 
@@ -85,20 +85,30 @@ public class HomeController implements Initializable {
         releaseYearComboBox.getItems().add(2015);
         releaseYearComboBox.getItems().add(2010);
         releaseYearComboBox.getItems().add(1999);
+        */
 
         ratingComboBox.getItems().add("0");
+        ratingComboBox.getItems().add("0.5");
         ratingComboBox.getItems().add("1");
+        ratingComboBox.getItems().add("1.5");
         ratingComboBox.getItems().add("2");
+        ratingComboBox.getItems().add("2.5");
         ratingComboBox.getItems().add("3");
+        ratingComboBox.getItems().add("3.5");
         ratingComboBox.getItems().add("4");
+        ratingComboBox.getItems().add("4.5");
         ratingComboBox.getItems().add("5");
+        ratingComboBox.getItems().add("5.5");
         ratingComboBox.getItems().add("6");
+        ratingComboBox.getItems().add("6.5");
         ratingComboBox.getItems().add("7");
+        ratingComboBox.getItems().add("7.5");
         ratingComboBox.getItems().add("8");
+        ratingComboBox.getItems().add("8.5");
         ratingComboBox.getItems().add("9");
+        ratingComboBox.getItems().add("9.5");
 
-        releaseYearComboBox.setPromptText("Filter by Release Year");
-        ratingComboBox.setPromptText("Filter by Rating");*/
+        ratingComboBox.setPromptText("Filter by Rating");
     }
 
     // sort movies based on sortedState
@@ -172,24 +182,32 @@ public class HomeController implements Initializable {
 
         applyAllFilters(searchQuery, genre);*/
 
-        try {
+        if (!releaseYearTextField.getText().matches("[0-9]*")) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Wrong input");
+            //Setting the content of the dialog
+            alert.setContentText("Please enter a Number in the Release Year and Rating Text field!");
+            alert.show();
+        }  else
+            {
+                try {
 
-            System.out.println(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                    String.valueOf(releaseYearTextField.getText()), ratingTextField.getText()));
+                    System.out.println(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                            String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
 
-            observableMovies.clear();
-            observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                    String.valueOf(releaseYearTextField.getText()), ratingTextField.getText()));
+                    observableMovies.clear();
+                    observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                            String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-        if(sortedState != SortedState.NONE) {
-            sortMovies();
-        }
+                if(sortedState != SortedState.NONE) {
+                    sortMovies();
+                }
 
-
+            }
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
