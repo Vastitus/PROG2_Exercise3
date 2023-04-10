@@ -35,11 +35,16 @@ public class HomeController implements Initializable {
     @FXML
     public JFXComboBox genreComboBox;
 
-    @FXML
+    /*@FXML
     public JFXComboBox releaseYearComboBox;
 
     @FXML
     public JFXComboBox ratingComboBox;
+    */
+    @FXML
+    public TextField ratingTextField;
+
+    @FXML TextField releaseYearTextField;
 
     @FXML
     public JFXButton sortBtn;
@@ -73,7 +78,7 @@ public class HomeController implements Initializable {
         genreComboBox.setPromptText("Filter by Genre");
 
         //New ComboBoxes
-        releaseYearComboBox.getItems().add(2022);
+    /*    releaseYearComboBox.getItems().add(2022);
         releaseYearComboBox.getItems().add(2021);
         releaseYearComboBox.getItems().add(2020);
         releaseYearComboBox.getItems().add(2019);
@@ -93,7 +98,7 @@ public class HomeController implements Initializable {
         ratingComboBox.getItems().add("9");
 
         releaseYearComboBox.setPromptText("Filter by Release Year");
-        ratingComboBox.setPromptText("Filter by Rating");
+        ratingComboBox.setPromptText("Filter by Rating");*/
     }
 
     // sort movies based on sortedState
@@ -170,11 +175,11 @@ public class HomeController implements Initializable {
         try {
 
             System.out.println(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                    String.valueOf(releaseYearComboBox.getSelectionModel().getSelectedItem()), String.valueOf(ratingComboBox.getSelectionModel().getSelectedItem())));
+                    String.valueOf(releaseYearTextField.getText()), ratingTextField.getText()));
 
             observableMovies.clear();
             observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                    String.valueOf(releaseYearComboBox.getSelectionModel().getSelectedItem()), String.valueOf(ratingComboBox.getSelectionModel().getSelectedItem())));
+                    String.valueOf(releaseYearTextField.getText()), ratingTextField.getText()));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -183,6 +188,8 @@ public class HomeController implements Initializable {
         if(sortedState != SortedState.NONE) {
             sortMovies();
         }
+
+
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {

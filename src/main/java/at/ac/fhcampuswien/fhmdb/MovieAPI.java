@@ -120,7 +120,9 @@ public class MovieAPI {
                 movies.add(new Movie(
                         movie.getString("title"),
                         movie.getString("description"),
-                        List.of(mapGenres(movie.getJSONArray("genres")))));
+                        List.of(mapGenres(movie.getJSONArray("genres"))),
+                        String.valueOf(movie.getInt("releaseYear"))
+                ));
 
             }
 

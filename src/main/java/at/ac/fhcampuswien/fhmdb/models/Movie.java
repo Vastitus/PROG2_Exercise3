@@ -20,10 +20,13 @@ public class Movie {
     private final String description;
     private final List<Genre> genres;
 
-    public Movie(String title, String description, List<Genre> genres) {
+    private final String releaseYear;
+
+    public Movie(String title, String description, List<Genre> genres, String releaseYear) {
         this.title = title;
         this.description = description;
         this.genres = genres;
+        this.releaseYear = releaseYear;
     }
 
 
@@ -63,6 +66,10 @@ public class Movie {
         return genres;
     }
 
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
     public static List<Movie> apiRequestInitial() {
         List<Movie> movies = new ArrayList<>();
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
@@ -96,7 +103,10 @@ public class Movie {
                 movies.add(new Movie(
                         movie.getString("title"),
                         movie.getString("description"),
-                        List.of(mapGenres(movie.getJSONArray("genres")))));
+                        List.of(mapGenres(movie.getJSONArray("genres"))),
+                        String.valueOf(movie.getInt("releaseYear"))
+
+                        ));
             }
 
 
@@ -114,12 +124,13 @@ public class Movie {
         }
     }
 
-    public static List<Movie> initializeMovies(){
+    /*public static List<Movie> initializeMovies(){
         List<Movie> movies = new ArrayList<>();
         movies.add(new Movie(
                 "Life Is Beautiful",
                 "When an open-minded Jewish librarian and his son become victims of the Holocaust, he uses a perfect mixture of will, humor, and imagination to protect his son from the dangers around their camp." ,
-                Arrays.asList(Genre.DRAMA, Genre.ROMANCE)));
+                Arrays.asList(Genre.DRAMA, Genre.ROMANCE)),
+        );
         movies.add(new Movie(
                 "The Usual Suspects",
                 "A sole survivor tells of the twisty events leading up to a horrific gun battle on a boat, which begin when five criminals meet at a seemingly random police lineup.",
@@ -139,5 +150,7 @@ public class Movie {
 
         return movies;
 
-    }
+    }*/
+
+
 }

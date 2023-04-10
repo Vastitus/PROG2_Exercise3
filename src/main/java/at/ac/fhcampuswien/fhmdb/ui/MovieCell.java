@@ -14,7 +14,9 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label genre = new Label();
-    private final VBox layout = new VBox(title, detail, genre);
+
+    private final Label releaseYear = new Label();
+    private final VBox layout = new VBox(title, detail, genre, releaseYear);
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -32,11 +34,16 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
 
+
             String genres = movie.getGenres()
                     .stream()
                     .map(Enum::toString)
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
+
+            releaseYear.setText("Release Year: " + movie.getReleaseYear());
+
+
 
 
             // color scheme
@@ -44,6 +51,7 @@ public class MovieCell extends ListCell<Movie> {
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
+            releaseYear.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
