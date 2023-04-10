@@ -56,7 +56,9 @@ public class MovieCell extends ListCell<Movie> {
             genre.getStyleClass().add("text-white");
             genre.setStyle("-fx-font-style: italic");
             releaseYear.getStyleClass().add("text-white");
+            releaseYear.setStyle("-fx-font-style: italic");
             rating.getStyleClass().add("text-white");
+            rating.setStyle("-fx-font-style: italic");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout

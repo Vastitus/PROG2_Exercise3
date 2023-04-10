@@ -35,14 +35,8 @@ public class HomeController implements Initializable {
     @FXML
     public JFXComboBox genreComboBox;
 
-    /*@FXML
-    public JFXComboBox releaseYearComboBox; */
-
     @FXML
     public JFXComboBox ratingComboBox;
-
-    @FXML
-    public TextField ratingTextField;
 
     @FXML TextField releaseYearTextField;
 
@@ -62,10 +56,11 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = Movie.apiRequestInitial();
+        allMovies = MovieAPI.apiRequest();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
+        sortMovies();
     }
 
     public void initializeLayout() {
@@ -76,16 +71,6 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().add("No filter");  // add "no filter" to the combobox
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
-
-        //New ComboBoxes
-    /*    releaseYearComboBox.getItems().add(2022);
-        releaseYearComboBox.getItems().add(2021);
-        releaseYearComboBox.getItems().add(2020);
-        releaseYearComboBox.getItems().add(2019);
-        releaseYearComboBox.getItems().add(2015);
-        releaseYearComboBox.getItems().add(2010);
-        releaseYearComboBox.getItems().add(1999);
-        */
 
         ratingComboBox.getItems().add("0");
         ratingComboBox.getItems().add("0.5");
@@ -167,7 +152,6 @@ public class HomeController implements Initializable {
         if (searchQuery.equals("") &&  genreComboBox.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Choose Filter");
-            //Setting the content of the dialog
             alert.setContentText("Please choose a Filter!");
             alert.show();
         }
@@ -177,23 +161,15 @@ public class HomeController implements Initializable {
     }
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
-      /*  String searchQuery = searchField.getText().trim().toLowerCase();
-        Object genre = genreComboBox.getSelectionModel().getSelectedItem();
-
-        applyAllFilters(searchQuery, genre);*/
 
         if (!releaseYearTextField.getText().matches("[0-9]*")) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Wrong input");
-            //Setting the content of the dialog
             alert.setContentText("Please enter a Number in the Release Year and Rating Text field!");
             alert.show();
         }  else
             {
                 try {
-
-                    System.out.println(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                            String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
 
                     observableMovies.clear();
                     observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
@@ -212,5 +188,25 @@ public class HomeController implements Initializable {
 
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
+    }
+
+    String getMostPopularActor(List<Movie> movies) {
+
+        return "";
+    }
+
+    int getLongestMovieTitle(List<Movie> movies) {
+
+        return 0;
+    }
+
+    long countMoviesFrom (List<Movie> movies, int startYear,int endYear) {
+
+        return 0;
+    }
+
+    List <Movie> getMoviesBetweenYears (List<Movie> movies, int startYear, int endYear) {
+
+        return movies;
     }
 }

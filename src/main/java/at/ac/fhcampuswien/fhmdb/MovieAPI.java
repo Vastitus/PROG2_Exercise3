@@ -26,36 +26,59 @@ import org.json.JSONObject;
 import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
-    private static final String API_BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
-    private static final String USER_AGENT_HEADER = "User-Agent";
-    private static final String USER_AGENT_VALUE = "http.agent";
-    private static OkHttpClient client;
-    private static Gson gson;
 
-    public MovieAPI() {
-        client = new OkHttpClient();
-        gson = new Gson();
-    }
+    public static List<Movie> apiRequest() {
+        List<Movie> movies = new ArrayList<>();
+        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-    public List<Movie> getMovies() throws IOException {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(API_BASE_URL).newBuilder();
-        String url = urlBuilder.build().toString();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader(USER_AGENT_HEADER, USER_AGENT_VALUE)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Error: " + conn.getResponseCode());
             }
 
-            String responseBody = response.body().string();
-            TypeToken<List<Movie>> movieListType = new TypeToken<List<Movie>>() {};
-            List<Movie> movies = gson.fromJson(responseBody, movieListType.getType());
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            StringBuilder response = new StringBuilder();
+            String output;
+
+            while ((output = br.readLine()) != null) {
+                response.append(output);
+            }
+
+            conn.disconnect();
+
+
+            JSONArray moviesJSONArray = new JSONArray(response.toString());
+
+
+            for (int i = 0; i < moviesJSONArray.length(); i++) {
+                JSONObject movie = moviesJSONArray.getJSONObject(i);
+
+
+                movies.add(new Movie(
+                        movie.getString("title"),
+                        movie.getString("description"),
+                        List.of(mapGenres(movie.getJSONArray("genres"))),
+                        String.valueOf(movie.getInt("releaseYear")),
+                        String.valueOf(movie.getDouble("rating"))
+
+                ));
+            }
+
 
             return movies;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -65,8 +88,7 @@ public class MovieAPI {
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse(urlString).newBuilder();
-        /*urlBuilder.addQueryParameter("query", query);
-        urlBuilder.addQueryParameter("genre", genre);*/
+
 
         if (!queryText.equals("")) {
             urlBuilder.addQueryParameter("query", queryText);
@@ -87,8 +109,6 @@ public class MovieAPI {
 
         String urlStringBuild = urlBuilder.build().toString();
 
-        System.out.println("Built URL: " + urlStringBuild);
-        System.out.println(urlString);
 
         List<Movie> movies = new ArrayList<>();
         try {
