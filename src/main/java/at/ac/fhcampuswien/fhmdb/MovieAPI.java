@@ -6,19 +6,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
 import java.io.IOException;
-import java.util.List;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+
 import okhttp3.HttpUrl;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +24,7 @@ import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
 
-    public static List<Movie> apiRequest() {
+    public static List<Movie> apiRequestWithParameter() {
         List<Movie> movies = new ArrayList<>();
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
         try {
@@ -82,8 +79,20 @@ public class MovieAPI {
         }
     }
 
+    public static List<Movie> apiRequestGetActors() {
+        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(urlString).newBuilder();
+        String urlStringBuild = urlBuilder.build().toString();
+        apiRequest(urlStringBuild);
+        JSONArray moviesJSONArray = apiRequest(urlStringBuild);
+        List<Movie> movies = new ArrayList<>();
 
-    public static List<Movie> apiRequest (String queryText, String genre, String releaseYear, String rating) throws IOException {
+        return movies;
+
+    }
+
+
+    public static List<Movie> apiRequestWithParameter(String queryText, String genre, String releaseYear, String rating) throws IOException {
 
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
 
@@ -99,7 +108,7 @@ public class MovieAPI {
             urlBuilder.addQueryParameter("genre", genre);
         }
 
-        if (!releaseYear.equals("null") && !releaseYear.equals("Filter by Release Year") && !releaseYear.equals(""))  {
+        if (!releaseYear.equals("null") && !releaseYear.equals("Filter by Release Year") && !releaseYear.equals("")) {
             urlBuilder.addQueryParameter("releaseYear", releaseYear);
         }
 
@@ -109,8 +118,33 @@ public class MovieAPI {
 
         String urlStringBuild = urlBuilder.build().toString();
 
+        apiRequest(urlStringBuild);
 
+        JSONArray moviesJSONArray = apiRequest(urlStringBuild);
         List<Movie> movies = new ArrayList<>();
+
+        for (int i = 0; i < moviesJSONArray.length(); i++) {
+            JSONObject movie = moviesJSONArray.getJSONObject(i);
+
+
+            movies.add(new Movie(
+                    movie.getString("title"),
+                    movie.getString("description"),
+                    List.of(mapGenres(movie.getJSONArray("genres"))),
+                    String.valueOf(movie.getInt("releaseYear")),
+                    String.valueOf(movie.getDouble("rating"))
+            ));
+
+        }
+
+        System.out.println("After API Request Array List Movies" +
+                "has size: " + movies.size());
+
+        return movies;
+    }
+
+    @Nullable
+    private static JSONArray apiRequest(String urlStringBuild) {
         try {
             URL url = new URL(urlStringBuild);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -132,33 +166,14 @@ public class MovieAPI {
 
             JSONArray moviesJSONArray = new JSONArray(response.toString());
 
-
-            for (int i = 0; i < moviesJSONArray.length(); i++) {
-                JSONObject movie = moviesJSONArray.getJSONObject(i);
-
-
-                movies.add(new Movie(
-                        movie.getString("title"),
-                        movie.getString("description"),
-                        List.of(mapGenres(movie.getJSONArray("genres"))),
-                        String.valueOf(movie.getInt("releaseYear")),
-                        String.valueOf(movie.getDouble("rating"))
-                ));
-
-            }
-
-            return movies;
-
-
+            return moviesJSONArray;
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
+
     }
 }

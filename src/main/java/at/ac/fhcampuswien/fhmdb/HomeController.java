@@ -17,10 +17,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class HomeController implements Initializable {
     @FXML
@@ -56,7 +53,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = MovieAPI.apiRequest();
+        allMovies = MovieAPI.apiRequestWithParameter();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -172,7 +169,7 @@ public class HomeController implements Initializable {
                 try {
 
                     observableMovies.clear();
-                    observableMovies.addAll(MovieAPI.apiRequest(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                    observableMovies.addAll(MovieAPI.apiRequestWithParameter(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
                             String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
 
                 } catch (IOException e) {
@@ -192,7 +189,9 @@ public class HomeController implements Initializable {
 
     String getMostPopularActor(List<Movie> movies) {
 
-        return "";
+        //Bekommt Liste von Movies z.B. mit 33 Filmen
+
+            return "";
     }
 
     int getLongestMovieTitle(List<Movie> movies) {
