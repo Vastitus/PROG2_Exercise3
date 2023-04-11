@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import org.json.JSONArray;
+import sun.net.www.http.KeepAliveCache;
 
 import java.io.IOException;
 import java.net.URL;
@@ -192,16 +194,8 @@ public class HomeController implements Initializable {
     }
 
     String getMostPopularActor(List<Movie> movies) {
-        movies.addAll(allMovies);
 
-        System.out.println(allMovies.size());
-        System.out.println(movies.get(0).getTitle());
-        System.out.println("TEST: " + movies.get(0).getMainCast());
-
-        //Bekommt Liste von Movies z.B. mit 33 Filmen
-        //Sollte Liste bekommen, in der die Schauspieler gespeichert sind.
-
-            return "";
+       return "";
     }
 
     int getLongestMovieTitle(List<Movie> movies) {

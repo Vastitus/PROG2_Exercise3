@@ -24,6 +24,41 @@ import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
 
+
+    @Nullable
+    private static JSONArray apiRequest(String urlStringBuild) {
+        try {
+            URL url = new URL(urlStringBuild);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Error: " + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            StringBuilder response = new StringBuilder();
+            String output;
+
+            while ((output = br.readLine()) != null) {
+                response.append(output);
+            }
+
+            conn.disconnect();
+
+            JSONArray moviesJSONArray = new JSONArray(response.toString());
+
+            return moviesJSONArray;
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public static List<Movie> requestMovies() {
         List<Movie> movies = new ArrayList<>();
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
@@ -60,7 +95,8 @@ public class MovieAPI {
                         List.of(mapGenres(movie.getJSONArray("genres"))),
                         String.valueOf(movie.getInt("releaseYear")),
                         String.valueOf(movie.getDouble("rating")),
-                        movie.getJSONArray("mainCast")
+                        movie.getJSONArray("mainCast"),
+                        movie.getJSONArray("directors")
 
                         ));
             }
@@ -79,19 +115,6 @@ public class MovieAPI {
             return null;
         }
     }
-
-    public static List<Movie> apiRequestGetActors() {
-        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(urlString).newBuilder();
-        String urlStringBuild = urlBuilder.build().toString();
-        apiRequest(urlStringBuild);
-        JSONArray moviesJSONArray = apiRequest(urlStringBuild);
-        List<Movie> movies = new ArrayList<>();
-
-        return movies;
-
-    }
-
 
     public static List<Movie> requestMovies(String queryText, String genre, String releaseYear, String rating) throws IOException {
 
@@ -134,7 +157,8 @@ public class MovieAPI {
                     List.of(mapGenres(movie.getJSONArray("genres"))),
                     String.valueOf(movie.getInt("releaseYear")),
                     String.valueOf(movie.getDouble("rating")),
-                    movie.getJSONArray("mainCast")
+                    movie.getJSONArray("mainCast"),
+                    movie.getJSONArray("directors")
 
                     ));
 
@@ -143,37 +167,5 @@ public class MovieAPI {
         return movies;
     }
 
-    @Nullable
-    private static JSONArray apiRequest(String urlStringBuild) {
-        try {
-            URL url = new URL(urlStringBuild);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Error: " + conn.getResponseCode());
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-            StringBuilder response = new StringBuilder();
-            String output;
-
-            while ((output = br.readLine()) != null) {
-                response.append(output);
-            }
-
-            conn.disconnect();
-
-            JSONArray moviesJSONArray = new JSONArray(response.toString());
-
-            return moviesJSONArray;
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

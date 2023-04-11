@@ -14,9 +14,10 @@ public class Movie {
 
     private final String rating;
     private final JSONArray mainCast;
+    private final JSONArray directors;
 
 
-    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating, JSONArray mainCast) {
+    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating, JSONArray mainCast, JSONArray directors) {
 
         this.title = title;
         this.description = description;
@@ -24,11 +25,16 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.rating = rating;
         this.mainCast = mainCast;
+        this.directors = directors;
     }
 
 
     public JSONArray getMainCast() {
         return mainCast;
+    }
+
+    public JSONArray getDirectors() {
+        return directors;
     }
 
     @Override
