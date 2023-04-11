@@ -53,7 +53,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = MovieAPI.apiRequestWithParameter();
+        allMovies = MovieAPI.requestMovies();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -159,6 +159,7 @@ public class HomeController implements Initializable {
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
 
+
         if (!releaseYearTextField.getText().matches("[0-9]*")) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Wrong input");
@@ -169,7 +170,7 @@ public class HomeController implements Initializable {
                 try {
 
                     observableMovies.clear();
-                    observableMovies.addAll(MovieAPI.apiRequestWithParameter(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
+                    observableMovies.addAll(MovieAPI.requestMovies(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
                             String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
 
                 } catch (IOException e) {
@@ -181,6 +182,9 @@ public class HomeController implements Initializable {
                 }
 
             }
+
+        //Test of Stream Methods
+        getMostPopularActor(observableMovies);
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -188,8 +192,14 @@ public class HomeController implements Initializable {
     }
 
     String getMostPopularActor(List<Movie> movies) {
+        movies.addAll(allMovies);
+
+        System.out.println(allMovies.size());
+        System.out.println(movies.get(0).getTitle());
+        System.out.println("TEST: " + movies.get(0).getMainCast());
 
         //Bekommt Liste von Movies z.B. mit 33 Filmen
+        //Sollte Liste bekommen, in der die Schauspieler gespeichert sind.
 
             return "";
     }

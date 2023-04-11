@@ -24,7 +24,7 @@ import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
 
-    public static List<Movie> apiRequestWithParameter() {
+    public static List<Movie> requestMovies() {
         List<Movie> movies = new ArrayList<>();
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
         try {
@@ -59,9 +59,10 @@ public class MovieAPI {
                         movie.getString("description"),
                         List.of(mapGenres(movie.getJSONArray("genres"))),
                         String.valueOf(movie.getInt("releaseYear")),
-                        String.valueOf(movie.getDouble("rating"))
+                        String.valueOf(movie.getDouble("rating")),
+                        movie.getJSONArray("mainCast")
 
-                ));
+                        ));
             }
 
 
@@ -92,7 +93,7 @@ public class MovieAPI {
     }
 
 
-    public static List<Movie> apiRequestWithParameter(String queryText, String genre, String releaseYear, String rating) throws IOException {
+    public static List<Movie> requestMovies(String queryText, String genre, String releaseYear, String rating) throws IOException {
 
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
 
@@ -132,13 +133,12 @@ public class MovieAPI {
                     movie.getString("description"),
                     List.of(mapGenres(movie.getJSONArray("genres"))),
                     String.valueOf(movie.getInt("releaseYear")),
-                    String.valueOf(movie.getDouble("rating"))
-            ));
+                    String.valueOf(movie.getDouble("rating")),
+                    movie.getJSONArray("mainCast")
+
+                    ));
 
         }
-
-        System.out.println("After API Request Array List Movies" +
-                "has size: " + movies.size());
 
         return movies;
     }

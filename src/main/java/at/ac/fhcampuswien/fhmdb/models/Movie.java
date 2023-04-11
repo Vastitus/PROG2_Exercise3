@@ -13,13 +13,22 @@ public class Movie {
     private final String releaseYear;
 
     private final String rating;
+    private final JSONArray mainCast;
 
-    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating) {
+
+    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating, JSONArray mainCast) {
+
         this.title = title;
         this.description = description;
         this.genres = genres;
         this.releaseYear = releaseYear;
         this.rating = rating;
+        this.mainCast = mainCast;
+    }
+
+
+    public JSONArray getMainCast() {
+        return mainCast;
     }
 
     @Override
