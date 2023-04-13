@@ -14,12 +14,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import java.util.*;
+
 import org.json.JSONArray;
-import sun.net.www.http.KeepAliveCache;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -186,7 +188,8 @@ public class HomeController implements Initializable {
             }
 
         //Test of Stream Methods
-        getMostPopularActor(observableMovies);
+        System.out.println("Most popular Actors: " + getMostPopularActor(observableMovies));
+        getLongestMovieTitle(observableMovies);
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -195,7 +198,18 @@ public class HomeController implements Initializable {
 
     String getMostPopularActor(List<Movie> movies) {
 
-       return "";
+        Map<Object, Long> actorCounts = movies.stream()
+                .flatMap(movie -> movie.getMainCast().toList().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Optional<Long> maxCount = actorCounts.values().stream().max(Long::compare);
+
+        String mostPopularActor = actorCounts.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(maxCount.orElse(null)))
+                .map(entry -> (String) entry.getKey())
+                .collect(Collectors.joining(", "));
+
+        return mostPopularActor;
     }
 
     int getLongestMovieTitle(List<Movie> movies) {
