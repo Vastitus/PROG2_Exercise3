@@ -16,8 +16,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import java.util.*;
 
-import org.json.JSONArray;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.function.Function;
@@ -73,27 +71,10 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(genres);    // add all genres to the combobox
         genreComboBox.setPromptText("Filter by Genre");
 
-        ratingComboBox.getItems().add("0");
-        ratingComboBox.getItems().add("0.5");
-        ratingComboBox.getItems().add("1");
-        ratingComboBox.getItems().add("1.5");
-        ratingComboBox.getItems().add("2");
-        ratingComboBox.getItems().add("2.5");
-        ratingComboBox.getItems().add("3");
-        ratingComboBox.getItems().add("3.5");
-        ratingComboBox.getItems().add("4");
-        ratingComboBox.getItems().add("4.5");
-        ratingComboBox.getItems().add("5");
-        ratingComboBox.getItems().add("5.5");
-        ratingComboBox.getItems().add("6");
-        ratingComboBox.getItems().add("6.5");
-        ratingComboBox.getItems().add("7");
-        ratingComboBox.getItems().add("7.5");
-        ratingComboBox.getItems().add("8");
-        ratingComboBox.getItems().add("8.5");
-        ratingComboBox.getItems().add("9");
-        ratingComboBox.getItems().add("9.5");
-
+        //Fill the Rating ComboBox
+        for (double i = 0; i <= 10; i = i + 0.5) {
+            ratingComboBox.getItems().add(i);
+        }
         ratingComboBox.setPromptText("Filter by Rating");
     }
 
@@ -186,13 +167,6 @@ public class HomeController implements Initializable {
                 }
 
             }
-
-        //Test of Stream Methods
-        System.out.println("Most popular Actors: " + getMostPopularActor(observableMovies));
-        System.out.println("Longest Movie character count: " + getLongestMovieTitle(observableMovies));
-        System.out.println("Amount of movies from Steven Spielberg: " + countMoviesFrom(observableMovies, "Steven Spielberg"));
-
-
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -230,7 +204,8 @@ public class HomeController implements Initializable {
     }
 
     List <Movie> getMoviesBetweenYears (List<Movie> movies, int startYear, int endYear) {
-
-        return null;
+        return movies.stream()
+                .filter(movie -> Integer.parseInt(movie.getReleaseYear()) >= startYear && Integer.parseInt(movie.getReleaseYear()) <= endYear)
+                .collect(Collectors.toList());
     }
 }
