@@ -96,6 +96,7 @@ public class MovieAPI {
                         String.valueOf(movie.getInt("releaseYear")),
                         String.valueOf(movie.getDouble("rating")),
                         movie.getJSONArray("mainCast"),
+                        movie.getJSONArray("writers"),
                         movie.getJSONArray("directors")
 
                         ));
@@ -158,6 +159,7 @@ public class MovieAPI {
                     String.valueOf(movie.getInt("releaseYear")),
                     String.valueOf(movie.getDouble("rating")),
                     movie.getJSONArray("mainCast"),
+                    movie.getJSONArray("writers"),
                     movie.getJSONArray("directors")
 
                     ));

@@ -15,9 +15,10 @@ public class Movie {
     private final String rating;
     private final JSONArray mainCast;
     private final JSONArray writers;
+    private final JSONArray directors;
 
 
-    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating, JSONArray mainCast, JSONArray writers) {
+    public Movie(String title, String description, List<Genre> genres, String releaseYear, String rating, JSONArray mainCast, JSONArray writers, JSONArray directors) {
 
         this.title = title;
         this.description = description;
@@ -26,6 +27,7 @@ public class Movie {
         this.rating = rating;
         this.mainCast = mainCast;
         this.writers = writers;
+        this.directors = directors;
     }
 
 
@@ -34,6 +36,10 @@ public class Movie {
     }
 
     public JSONArray getDirectors() {
+        return directors;
+    }
+
+    public JSONArray getWriters() {
         return writers;
     }
 

@@ -189,7 +189,9 @@ public class HomeController implements Initializable {
 
         //Test of Stream Methods
         System.out.println("Most popular Actors: " + getMostPopularActor(observableMovies));
-        getLongestMovieTitle(observableMovies);
+        System.out.println("Longest Movie character count: " + getLongestMovieTitle(observableMovies));
+        System.out.println("Amount of movies from Steven Spielberg: " + countMoviesFrom(observableMovies, "Steven Spielberg"));
+
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -213,11 +215,14 @@ public class HomeController implements Initializable {
     }
 
     int getLongestMovieTitle(List<Movie> movies) {
+        OptionalInt longestTitleLength = movies.stream()
+                .mapToInt(movie -> movie.getTitle().length())
+                .max();
 
-        return 0;
+        return longestTitleLength.orElse(0);
     }
 
-    long countMoviesFrom (List<Movie> movies, int startYear,int endYear) {
+    long countMoviesFrom (List<Movie> movies, String director) {
 
         return 0;
     }
