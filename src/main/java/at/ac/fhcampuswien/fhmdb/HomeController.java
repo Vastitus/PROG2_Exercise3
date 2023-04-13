@@ -192,6 +192,7 @@ public class HomeController implements Initializable {
         System.out.println("Longest Movie character count: " + getLongestMovieTitle(observableMovies));
         System.out.println("Amount of movies from Steven Spielberg: " + countMoviesFrom(observableMovies, "Steven Spielberg"));
 
+
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -216,19 +217,20 @@ public class HomeController implements Initializable {
 
     int getLongestMovieTitle(List<Movie> movies) {
         OptionalInt longestTitleLength = movies.stream()
-                .mapToInt(movie -> movie.getTitle().length())
+                .mapToInt(movie -> movie.getTitle().trim().length())
                 .max();
 
         return longestTitleLength.orElse(0);
     }
 
     long countMoviesFrom (List<Movie> movies, String director) {
-
-        return 0;
+        return movies.stream()
+                .filter(movie -> movie.getDirectors().toList().contains(director))
+                .count();
     }
 
     List <Movie> getMoviesBetweenYears (List<Movie> movies, int startYear, int endYear) {
 
-        return movies;
+        return null;
     }
 }
