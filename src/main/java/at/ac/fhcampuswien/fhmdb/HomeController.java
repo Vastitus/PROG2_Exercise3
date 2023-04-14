@@ -108,16 +108,16 @@ public class HomeController implements Initializable {
     }
 
     public List<Movie> filterByGenre(List<Movie> movies, Genre genre){
+        List <Movie> moviesList;
         if(genre == null) return movies;
 
         if(movies == null) {
             throw new IllegalArgumentException("movies must not be null");
         }
 
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie -> movie.getGenres().contains(genre))
-                .toList();
+        moviesList = MovieAPI.requestMoviesByGenre(genre);
+
+        return moviesList;
     }
 
     private static void createAlert(Alert.AlertType alertType, String title, String contentText) {
@@ -148,8 +148,22 @@ public class HomeController implements Initializable {
     }
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
+        List<Movie> filteredMovies;
 
-        if (!releaseYearTextField.getText().matches("[0-9]*")) {
+        //If Genre is chosen, call filterByGenre and add result into observableMovies List
+        if (genreComboBox.getValue() != null && genreComboBox.getValue() != "Filter by Genre" && genreComboBox.getValue() != "No filter") {
+            filteredMovies = filterByGenre((List<Movie>) observableMovies, (Genre) genreComboBox.getSelectionModel().getSelectedItem());
+            observableMovies.clear();
+            observableMovies.addAll(filteredMovies);
+        }
+
+        //If "no filter", fill the List with all Movies
+        if (genreComboBox.getValue() == "No filter") {
+            observableMovies.clear();
+            observableMovies.addAll(allMovies);
+        }
+
+        /*if (!releaseYearTextField.getText().matches("[0-9]*")) {
             createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please enter a Number in the Release Year and Rating Text field!");
         }  else
             {
@@ -167,7 +181,7 @@ public class HomeController implements Initializable {
                     sortMovies();
                 }
 
-            }
+            }*/
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {

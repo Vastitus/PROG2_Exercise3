@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
 
-
+    //Makes an API request and returns the result in a JSONArray
     @Nullable
     private static JSONArray apiRequest(String urlStringBuild) {
         try {
@@ -60,22 +61,47 @@ public class MovieAPI {
 
     }
 
+    //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
+    @NotNull
+    private static List<Movie> createMovies(String url) {
+        JSONArray moviesJSONArray = apiRequest(url);
+        List<Movie> movies = new ArrayList<>();
+
+        for (int i = 0; i < moviesJSONArray.length(); i++) {
+            JSONObject movie = moviesJSONArray.getJSONObject(i);
+
+            movies.add(new Movie(
+                    movie.getString("title"),
+                    movie.getString("description"),
+                    List.of(mapGenres(movie.getJSONArray("genres"))),
+                    String.valueOf(movie.getInt("releaseYear")),
+                    String.valueOf(movie.getDouble("rating")),
+                    movie.getJSONArray("mainCast"),
+                    movie.getJSONArray("writers"),
+                    movie.getJSONArray("directors")
+            ));
+        }
+        return movies;
+    }
+
+    //The request-methods call the createMovies method with a URL
+
+    //Request Movies without any parameters
     public static List<Movie> requestMovies() {
-        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
-        return createMovies(urlString);
+        String url = "http://prog2.fh-campuswien.ac.at/movies";
+        return createMovies(url);
 
     }
 
+    //Request Movies with parameters
     public static List<Movie> requestMovies(String queryText, String genre, String releaseYear, String rating) throws IOException {
 
-        String urlString = "http://prog2.fh-campuswien.ac.at/movies";
+        String url = "http://prog2.fh-campuswien.ac.at/movies";
 
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(urlString).newBuilder();
-
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
 
         if (!queryText.equals("")) {
             urlBuilder.addQueryParameter("query", queryText);
-
         }
 
         if (!genre.equals("null") && !genre.equals("No filter") && !genre.equals("Filter by Genre") && !genre.equals("")) {
@@ -90,38 +116,16 @@ public class MovieAPI {
             urlBuilder.addQueryParameter("ratingFrom", rating);
         }
 
-        String urlStringNew = urlBuilder.build().toString();
+        String urlNew = urlBuilder.build().toString();
 
-        apiRequest(urlStringNew);
+        apiRequest(urlNew);
 
-        return createMovies(urlStringNew);
+        return createMovies(urlNew);
     }
 
-    @NotNull
-    private static List<Movie> createMovies(String urlStringBuild) {
-        JSONArray moviesJSONArray = apiRequest(urlStringBuild);
-        List<Movie> movies = new ArrayList<>();
-
-        for (int i = 0; i < moviesJSONArray.length(); i++) {
-            JSONObject movie = moviesJSONArray.getJSONObject(i);
-
-
-            movies.add(new Movie(
-                    movie.getString("title"),
-                    movie.getString("description"),
-                    List.of(mapGenres(movie.getJSONArray("genres"))),
-                    String.valueOf(movie.getInt("releaseYear")),
-                    String.valueOf(movie.getDouble("rating")),
-                    movie.getJSONArray("mainCast"),
-                    movie.getJSONArray("writers"),
-                    movie.getJSONArray("directors")
-
-            ));
-
-        }
-
+    public static List<Movie> requestMoviesByGenre(Genre genre) {
+        String url = "http://prog2.fh-campuswien.ac.at/movies?genre=" + genre;
+        List<Movie> movies = createMovies(url);
         return movies;
     }
-
-
 }
