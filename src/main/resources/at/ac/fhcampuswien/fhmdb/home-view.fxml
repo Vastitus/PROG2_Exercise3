@@ -30,13 +30,15 @@
    <HBox spacing="5.0" styleClass="background-black" stylesheets="@styles.css">
       <children>
          <JFXButton fx:id="sortBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Sort" onAction="#sortBtnClicked"/>
-         <TextField fx:id="searchField" prefHeight="25.0" prefWidth="170.0" promptText="Search FHMDb" />
-         <JFXComboBox fx:id="genreComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
-         <TextField fx:id="releaseYearTextField" prefHeight="25.0" prefWidth="170.0" promptText="Enter Release Year" />
-<!--         <JFXComboBox fx:id="releaseYearComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />-->
-         <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
-         <!--<TextField fx:id="ratingTextField" prefHeight="25.0" prefWidth="170.0" promptText="Enter min Rating" />-->
-         <JFXButton fx:id="searchBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Filter" onAction="#searchBtnClicked"/>
+         <TextField fx:id="searchField" prefHeight="25.0" prefWidth="130.0" promptText="Search FHMDb" />
+         <JFXComboBox fx:id="genreComboBox" focusColor="#f5c518" prefWidth="135.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
+         <TextField fx:id="releaseYearTextField" prefHeight="25.0" prefWidth="140.0" promptText="Enter Release Year" />
+         <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" prefWidth="135.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
+         <JFXButton fx:id="searchBtn" styleClass="background-yellow"  stylesheets="@styles.css" text="Filter" onAction="#searchBtnClicked"/>
+         <JFXButton fx:id="getMostPopularActorButton" styleClass="background-yellow" stylesheets="@styles.css" text="Most popular Actor" onAction="#mostPopularActorButtonClicked"/>
+         <JFXButton fx:id="getLongestMovieTitleButton" styleClass="background-yellow" stylesheets="@styles.css" text="Longest Movie Title" onAction="#longestMovieTitleButtonClicked"/>
+         <JFXButton fx:id="filterMoviesBetweenYearButton" styleClass="background-yellow" stylesheets="@styles.css" text="Releases between..." onAction="#filterMoviesBetweenYearsButtonClicked"/>
+         <JFXButton fx:id="countMoviesFromButton" styleClass="background-yellow"  stylesheets="@styles.css" text="Movies from" onAction="#countMoviesFromButtonClicked"/>
       </children>
       <VBox.margin>
          <Insets />

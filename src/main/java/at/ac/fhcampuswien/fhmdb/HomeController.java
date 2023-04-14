@@ -120,6 +120,14 @@ public class HomeController implements Initializable {
                 .toList();
     }
 
+    private static void createAlert(Alert.AlertType alertType, String title, String contentText) {
+
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setContentText(contentText);
+        alert.show();
+    }
+
     public void applyAllFilters(String searchQuery, Object genre) {
         List<Movie> filteredMovies = allMovies;
 
@@ -132,10 +140,7 @@ public class HomeController implements Initializable {
         }
 
         if (searchQuery.equals("") &&  genreComboBox.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Choose Filter");
-            alert.setContentText("Please choose a Filter!");
-            alert.show();
+            createAlert(Alert.AlertType.WARNING, "Choose Filter", "Please choose a Filter!");
         }
 
         observableMovies.clear();
@@ -144,12 +149,8 @@ public class HomeController implements Initializable {
 
     public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
 
-
         if (!releaseYearTextField.getText().matches("[0-9]*")) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Wrong input");
-            alert.setContentText("Please enter a Number in the Release Year and Rating Text field!");
-            alert.show();
+            createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please enter a Number in the Release Year and Rating Text field!");
         }  else
             {
                 try {
@@ -191,10 +192,18 @@ public class HomeController implements Initializable {
 
     int getLongestMovieTitle(List<Movie> movies) {
         OptionalInt longestTitleLength = movies.stream()
-                .mapToInt(movie -> movie.getTitle().trim().length())
+                .mapToInt(movie -> movie.getTitle().replaceAll("\\s", "").length())
                 .max();
 
         return longestTitleLength.orElse(0);
+    }
+
+    //Additional Method to get the Title of the longest movie
+    String getTitleOfLongestMovie(List<Movie> movies) {
+        Optional<Movie> longestTitleMovie = movies.stream()
+                .max(Comparator.comparingInt(movie -> movie.getTitle().length()));
+
+        return longestTitleMovie.map(Movie::getTitle).orElse("");
     }
 
     long countMoviesFrom (List<Movie> movies, String director) {
@@ -207,5 +216,46 @@ public class HomeController implements Initializable {
         return movies.stream()
                 .filter(movie -> Integer.parseInt(movie.getReleaseYear()) >= startYear && Integer.parseInt(movie.getReleaseYear()) <= endYear)
                 .collect(Collectors.toList());
+    }
+
+    public void mostPopularActorButtonClicked(ActionEvent actionEvent) {
+
+        createAlert(Alert.AlertType.INFORMATION, "Most popular Actor", "The most popular Actor/s is/are: " + getMostPopularActor(observableMovies));
+    }
+
+
+    public void longestMovieTitleButtonClicked(ActionEvent actionEvent) {
+        createAlert(Alert.AlertType.INFORMATION, "The longest Movie Title", "The longest Movie Title is '" + getTitleOfLongestMovie(observableMovies) + "' and has " + getLongestMovieTitle(observableMovies) + " characters.");
+    }
+
+    public void filterMoviesBetweenYearsButtonClicked(ActionEvent actionEvent) {
+
+        if (!releaseYearTextField.getText().matches("[0-9]*") || releaseYearTextField.getText() == "" || releaseYearTextField.getText() == null) {
+            createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please enter a valid release year!");
+        }  else if (Integer.parseInt(releaseYearTextField.getText()) > 2023) {
+            createAlert(Alert.AlertType.WARNING, "Wrong Input", "The release year can't be in the future!");
+        } else if (Integer.parseInt(releaseYearTextField.getText()) < 1900) {
+            createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please don't choose a release year before 1900.");
+        }
+        else {
+
+            List<Movie> moviesFiltered = getMoviesBetweenYears(observableMovies, Integer.parseInt(releaseYearTextField.getText()), 2023);
+
+            if (moviesFiltered.size() == 1) {
+                createAlert(Alert.AlertType.INFORMATION, "Movie released between...", moviesFiltered.size() +
+                        " Movie has been released between " + releaseYearTextField.getText() + " and 2023.");
+            } else {
+                createAlert(Alert.AlertType.INFORMATION, "Movies released between...", moviesFiltered.size() +
+                        " Movies have been released between " + releaseYearTextField.getText() + " and 2023.");
+            }
+            System.out.println("Movies released: ");
+            for (int i = 0; i < moviesFiltered.size(); i++) {
+                System.out.println((moviesFiltered.get(i).getTitle() + ", " + moviesFiltered.get(i).getReleaseYear()));
+            }
+        }
+    }
+
+    public void countMoviesFromButtonClicked(ActionEvent actionEvent) {
+        createAlert(Alert.AlertType.INFORMATION, "Count Movies from...", "There are " + countMoviesFrom(observableMovies, "Steven Spielberg") + " movies from Steven Spielberg.");
     }
 }
