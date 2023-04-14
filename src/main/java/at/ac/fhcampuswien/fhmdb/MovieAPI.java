@@ -15,6 +15,7 @@ import java.util.List;
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,61 +61,9 @@ public class MovieAPI {
     }
 
     public static List<Movie> requestMovies() {
-        List<Movie> movies = new ArrayList<>();
         String urlString = "http://prog2.fh-campuswien.ac.at/movies";
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+        return createMovies(urlString);
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Error: " + conn.getResponseCode());
-            }
-
-            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-            StringBuilder response = new StringBuilder();
-            String output;
-
-            while ((output = br.readLine()) != null) {
-                response.append(output);
-            }
-
-            conn.disconnect();
-
-
-            JSONArray moviesJSONArray = new JSONArray(response.toString());
-
-
-            for (int i = 0; i < moviesJSONArray.length(); i++) {
-                JSONObject movie = moviesJSONArray.getJSONObject(i);
-
-
-                movies.add(new Movie(
-                        movie.getString("title"),
-                        movie.getString("description"),
-                        List.of(mapGenres(movie.getJSONArray("genres"))),
-                        String.valueOf(movie.getInt("releaseYear")),
-                        String.valueOf(movie.getDouble("rating")),
-                        movie.getJSONArray("mainCast"),
-                        movie.getJSONArray("writers"),
-                        movie.getJSONArray("directors")
-
-                        ));
-            }
-
-
-            return movies;
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static List<Movie> requestMovies(String queryText, String genre, String releaseYear, String rating) throws IOException {
@@ -141,10 +90,15 @@ public class MovieAPI {
             urlBuilder.addQueryParameter("ratingFrom", rating);
         }
 
-        String urlStringBuild = urlBuilder.build().toString();
+        String urlStringNew = urlBuilder.build().toString();
 
-        apiRequest(urlStringBuild);
+        apiRequest(urlStringNew);
 
+        return createMovies(urlStringNew);
+    }
+
+    @NotNull
+    private static List<Movie> createMovies(String urlStringBuild) {
         JSONArray moviesJSONArray = apiRequest(urlStringBuild);
         List<Movie> movies = new ArrayList<>();
 
@@ -162,7 +116,7 @@ public class MovieAPI {
                     movie.getJSONArray("writers"),
                     movie.getJSONArray("directors")
 
-                    ));
+            ));
 
         }
 
