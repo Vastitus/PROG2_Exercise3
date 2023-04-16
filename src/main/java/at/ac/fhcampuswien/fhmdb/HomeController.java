@@ -55,7 +55,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = MovieAPI.requestMovies();
+        allMovies = MovieAPI.requestMoviesWithoutParameter();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -91,97 +91,41 @@ public class HomeController implements Initializable {
         }
     }
 
-    public List<Movie> filterByQuery(List<Movie> movies, String query){
-        if(query == null || query.isEmpty()) return movies;
-
-        if(movies == null) {
-            throw new IllegalArgumentException("movies must not be null");
-        }
-
-        return movies.stream()
-                .filter(Objects::nonNull)
-                .filter(movie ->
-                    movie.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                    movie.getDescription().toLowerCase().contains(query.toLowerCase())
-                )
-                .toList();
-    }
-
-    public List<Movie> filterByGenre(List<Movie> movies, Genre genre){
-        List <Movie> moviesList;
-        if(genre == null) return movies;
-
-        if(movies == null) {
-            throw new IllegalArgumentException("movies must not be null");
-        }
-
-        moviesList = MovieAPI.requestMoviesByGenre(genre);
-
-        return moviesList;
-    }
-
     private static void createAlert(Alert.AlertType alertType, String title, String contentText) {
-
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setContentText(contentText);
         alert.show();
     }
 
-    public void applyAllFilters(String searchQuery, Object genre) {
-        List<Movie> filteredMovies = allMovies;
+    public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
 
-        if (!searchQuery.isEmpty()) {
-            filteredMovies = filterByQuery(filteredMovies, searchQuery);
+        if (genreComboBox.getValue() != null  && genreComboBox.getValue() != "No filter") {
+            MovieAPI.deleteURLParameter("genre");
+            MovieAPI.addURLParameter("genre", genreComboBox.getSelectionModel().getSelectedItem().toString());
         }
 
-        if (genre != null && !genre.toString().equals("No filter")) {
-            filteredMovies = filterByGenre(filteredMovies, Genre.valueOf(genre.toString()));
+        if (searchField.getText() != "") {
+            MovieAPI.deleteURLParameter("query");
+            MovieAPI.addURLParameter("query", searchField.getText());
         }
 
-        if (searchQuery.equals("") &&  genreComboBox.getValue() == null) {
-            createAlert(Alert.AlertType.WARNING, "Choose Filter", "Please choose a Filter!");
+        if (searchField.getText() == "") {
+            MovieAPI.deleteURLParameter("query");
+        }
+
+
+        if (releaseYearTextField.getText().matches("[0-9]*")) {
+            MovieAPI.deleteURLParameter("releaseYear");
+            MovieAPI.addURLParameter("releaseYear", releaseYearTextField.getText());
+        }
+
+        if (releaseYearTextField.getText().equals("")) {
+            MovieAPI.deleteURLParameter("releaseYear");
         }
 
         observableMovies.clear();
-        observableMovies.addAll(filteredMovies);
-    }
-
-    public void searchBtnClicked(ActionEvent actionEvent) throws IOException {
-        List<Movie> filteredMovies;
-
-        //If Genre is chosen, call filterByGenre and add result into observableMovies List
-        if (genreComboBox.getValue() != null && genreComboBox.getValue() != "Filter by Genre" && genreComboBox.getValue() != "No filter") {
-            filteredMovies = filterByGenre(observableMovies, (Genre) genreComboBox.getSelectionModel().getSelectedItem());
-            observableMovies.clear();
-            observableMovies.addAll(filteredMovies);
-        }
-
-        //If "no filter", fill the List with all Movies
-        if (genreComboBox.getValue() == "No filter") {
-            observableMovies.clear();
-            observableMovies.addAll(allMovies);
-        }
-
-        /*if (!releaseYearTextField.getText().matches("[0-9]*")) {
-            createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please enter a Number in the Release Year and Rating Text field!");
-        }  else
-            {
-                try {
-
-                    observableMovies.clear();
-                    observableMovies.addAll(MovieAPI.requestMovies(searchField.getText().trim().toLowerCase(), String.valueOf(genreComboBox.getSelectionModel().getSelectedItem()),
-                            String.valueOf(releaseYearTextField.getText()), String.valueOf(ratingComboBox.getValue())));
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                if(sortedState != SortedState.NONE) {
-                    sortMovies();
-                }
-
-            }*/
+        observableMovies.addAll(MovieAPI.createMovies(MovieAPI.getUrlBuilder().toString())); //Call createMovies with the built URL
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
@@ -234,12 +178,14 @@ public class HomeController implements Initializable {
 
     public void mostPopularActorButtonClicked(ActionEvent actionEvent) {
 
-        createAlert(Alert.AlertType.INFORMATION, "Most popular Actor", "The most popular Actor/s is/are: " + getMostPopularActor(observableMovies));
+        createAlert(Alert.AlertType.INFORMATION, "Most popular Actor", "The most popular Actor/s is/are: "
+                + getMostPopularActor(observableMovies));
     }
 
 
     public void longestMovieTitleButtonClicked(ActionEvent actionEvent) {
-        createAlert(Alert.AlertType.INFORMATION, "The longest Movie Title", "The longest Movie Title is '" + getTitleOfLongestMovie(observableMovies) + "' and has " + getLongestMovieTitle(observableMovies) + " characters.");
+        createAlert(Alert.AlertType.INFORMATION, "The longest Movie Title", "The longest Movie Title is '"
+                + getTitleOfLongestMovie(observableMovies) + "' and has " + getLongestMovieTitle(observableMovies) + " characters.");
     }
 
     public void filterMoviesBetweenYearsButtonClicked(ActionEvent actionEvent) {
@@ -252,7 +198,6 @@ public class HomeController implements Initializable {
             createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please don't choose a release year before 1900.");
         }
         else {
-
             List<Movie> moviesFiltered = getMoviesBetweenYears(observableMovies, Integer.parseInt(releaseYearTextField.getText()), 2023);
 
             if (moviesFiltered.size() == 1) {
@@ -270,6 +215,7 @@ public class HomeController implements Initializable {
     }
 
     public void countMoviesFromButtonClicked(ActionEvent actionEvent) {
-        createAlert(Alert.AlertType.INFORMATION, "Count Movies from...", "There are " + countMoviesFrom(observableMovies, "Steven Spielberg") + " movies from Steven Spielberg.");
+        createAlert(Alert.AlertType.INFORMATION, "Count Movies from...", "There are "
+                + countMoviesFrom(observableMovies, "Steven Spielberg") + " movies from Steven Spielberg.");
     }
 }

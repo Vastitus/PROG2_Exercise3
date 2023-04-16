@@ -1,14 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +15,18 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
+
+    public static final String URL = "http://prog2.fh-campuswien.ac.at/movies?";
+    public static HttpUrl.Builder urlBuilder = HttpUrl.parse(URL).newBuilder();
+
+    public static HttpUrl.Builder getUrlBuilder() {
+        return urlBuilder;
+    }
 
     //Makes an API request and returns the result in a JSONArray
     @Nullable
@@ -56,7 +55,7 @@ public class MovieAPI {
 
     //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
     @NotNull
-    private static List<Movie> createMovies(String url) {
+    public static List<Movie> createMovies(String url) {
         JSONArray moviesJSONArray = apiRequest(url);
         List<Movie> movies = new ArrayList<>();
 
@@ -70,23 +69,29 @@ public class MovieAPI {
                     String.valueOf(movie.getInt("releaseYear")),
                     String.valueOf(movie.getDouble("rating")),
                     movie.getJSONArray("mainCast"),
-                    movie.getJSONArray("writers"),
                     movie.getJSONArray("directors")
             ));
         }
         return movies;
     }
 
-    //The request-methods call the createMovies method with a URL
-
-    //Request Movies without any parameters
-    public static List<Movie> requestMovies() {
-        String url = "http://prog2.fh-campuswien.ac.at/movies";
-        return createMovies(url);
-
+    //Get movies without parameter
+    public static List<Movie> requestMoviesWithoutParameter() {
+        return createMovies(URL);
     }
 
-    //Request Movies with parameters
+    //Add a parameter to the URL
+    public static void addURLParameter(String parameter, String value) {
+        urlBuilder.addQueryParameter(parameter, value);
+    }
+
+    //Delete a parameter from the URL
+    public static void deleteURLParameter(String parameter) {
+        urlBuilder.removeAllQueryParameters(parameter);
+    }
+
+
+   /* //Request Movies with parameters
     public static List<Movie> requestMovies(String queryText, String genre, String releaseYear, String rating) throws IOException {
 
         String url = "http://prog2.fh-campuswien.ac.at/movies";
@@ -115,10 +120,5 @@ public class MovieAPI {
 
         return createMovies(urlNew);
     }
-
-    public static List<Movie> requestMoviesByGenre(Genre genre) {
-        String url = "http://prog2.fh-campuswien.ac.at/movies?genre=" + genre;
-        List<Movie> movies = createMovies(url);
-        return movies;
-    }
+*/
 }
