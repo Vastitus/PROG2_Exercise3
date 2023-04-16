@@ -17,6 +17,10 @@ public class MovieAPI {
         return urlBuilder;
     }
 
+    public static void setURLDefault() {
+        urlBuilder = HttpUrl.parse(URL).newBuilder();
+    }
+
     //Makes an API request and returns the result in a JSONArray
     @Nullable
     public static JSONArray apiRequest(String urlString) {

@@ -37,6 +37,7 @@ public class HomeController implements Initializable {
     @FXML
     public JFXComboBox ratingComboBox;
     public JFXButton resetBtn;
+    public TextField directorTextField;
 
     @FXML TextField releaseYearTextField;
 
@@ -222,8 +223,12 @@ public class HomeController implements Initializable {
     }
 
     public void countMoviesFromButtonClicked(ActionEvent actionEvent) {
+
+        if (directorTextField.getText() == "") {
+            createAlert(Alert.AlertType.WARNING, "Error", "Please enter a director!");
+        } else
         createAlert(Alert.AlertType.INFORMATION, "Count Movies from...", "There are "
-                + countMoviesFrom(observableMovies, "Steven Spielberg") + " movies from Steven Spielberg.");
+                + countMoviesFrom(observableMovies, directorTextField.getText()) + " movies from " + directorTextField.getText() + ".");
     }
 
     public void resetBtnClicked(ActionEvent actionEvent) {
@@ -233,6 +238,10 @@ public class HomeController implements Initializable {
         releaseYearTextField.setText("");
         ratingComboBox.setValue(null);
         ratingComboBox.setPromptText("Filter by Rating");
+        MovieAPI.setURLDefault();
+
+        observableMovies.clear();
+        observableMovies.addAll(allMovies);
 
     }
 }

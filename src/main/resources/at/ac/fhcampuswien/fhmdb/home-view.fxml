@@ -34,6 +34,7 @@
          <JFXComboBox fx:id="genreComboBox" focusColor="#f5c518" prefWidth="135.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <TextField fx:id="releaseYearTextField" prefHeight="25.0" prefWidth="140.0" promptText="Enter Release Year" />
          <JFXComboBox fx:id="ratingComboBox" focusColor="#f5c518" prefWidth="135.0" styleClass="filter-combo-box" stylesheets="@styles.css" />
+         <TextField fx:id="directorTextField" prefHeight="25.0" prefWidth="140.0" promptText="Enter director" />
          <JFXButton fx:id="searchBtn" styleClass="background-yellow"  stylesheets="@styles.css" text="Filter" onAction="#searchBtnClicked"/>
          <JFXButton fx:id="resetBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Reset" onAction="#resetBtnClicked"/>
          <JFXButton fx:id="getMostPopularActorButton" styleClass="background-yellow" stylesheets="@styles.css" text="Most popular Actor" onAction="#mostPopularActorButtonClicked"/>
