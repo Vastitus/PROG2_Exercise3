@@ -1,17 +1,21 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import static at.ac.fhcampuswien.fhmdb.MovieAPI.URL;
+import static at.ac.fhcampuswien.fhmdb.MovieAPI.apiRequest;
 
 
 public class Movie {
     private final String title;
     private final String description;
     private final List<Genre> genres;
-
     private final String releaseYear;
-
     private final String rating;
     private final JSONArray mainCast;
     private final JSONArray directors;
@@ -27,7 +31,6 @@ public class Movie {
         this.mainCast = mainCast;
         this.directors = directors;
     }
-
 
     public JSONArray getMainCast() {
         return mainCast;
@@ -78,6 +81,33 @@ public class Movie {
             genres[i] = Genre.valueOf(genreString);
         }
         return genres;
+    }
+
+    //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
+    @NotNull
+    public static List<Movie> createMovies(String url) {
+        JSONArray moviesJSONArray = apiRequest(url);
+        List<Movie> movies = new ArrayList<>();
+
+        for (int i = 0; i < moviesJSONArray.length(); i++) {
+            JSONObject movie = moviesJSONArray.getJSONObject(i);
+
+            movies.add(new Movie(
+                    movie.getString("title"),
+                    movie.getString("description"),
+                    List.of(mapGenres(movie.getJSONArray("genres"))),
+                    String.valueOf(movie.getInt("releaseYear")),
+                    String.valueOf(movie.getDouble("rating")),
+                    movie.getJSONArray("mainCast"),
+                    movie.getJSONArray("directors")
+            ));
+        }
+        return movies;
+    }
+
+    //Get movies without parameter
+    public static List<Movie> requestMoviesWithoutParameter() {
+        return createMovies(URL);
     }
 
 

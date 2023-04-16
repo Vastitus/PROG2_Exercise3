@@ -1,23 +1,12 @@
 package at.ac.fhcampuswien.fhmdb;
-
-import at.ac.fhcampuswien.fhmdb.models.Movie;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 import java.io.IOException;
-
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import static at.ac.fhcampuswien.fhmdb.models.Movie.mapGenres;
 
 public class MovieAPI {
 
@@ -30,7 +19,7 @@ public class MovieAPI {
 
     //Makes an API request and returns the result in a JSONArray
     @Nullable
-    private static JSONArray apiRequest(String urlString) {
+    public static JSONArray apiRequest(String urlString) {
             try {
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
@@ -46,6 +35,7 @@ public class MovieAPI {
                 String responseString = response.body().string();
                 JSONArray moviesJSONArray = new JSONArray(responseString);
 
+
                 return moviesJSONArray;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -53,7 +43,17 @@ public class MovieAPI {
 
         }
 
-    //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
+    //Add a parameter to the URL
+    public static void addURLParameter(String parameter, String value) {
+        urlBuilder.addQueryParameter(parameter, value);
+    }
+
+    //Delete a parameter from the URL
+    public static void deleteURLParameter(String parameter) {
+        urlBuilder.removeAllQueryParameters(parameter);
+    }
+
+   /* //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
     @NotNull
     public static List<Movie> createMovies(String url) {
         JSONArray moviesJSONArray = apiRequest(url);
@@ -78,17 +78,7 @@ public class MovieAPI {
     //Get movies without parameter
     public static List<Movie> requestMoviesWithoutParameter() {
         return createMovies(URL);
-    }
-
-    //Add a parameter to the URL
-    public static void addURLParameter(String parameter, String value) {
-        urlBuilder.addQueryParameter(parameter, value);
-    }
-
-    //Delete a parameter from the URL
-    public static void deleteURLParameter(String parameter) {
-        urlBuilder.removeAllQueryParameters(parameter);
-    }
+    }*/
 
 
    /* //Request Movies with parameters

@@ -55,7 +55,7 @@ public class HomeController implements Initializable {
     }
 
     public void initializeState() {
-        allMovies = MovieAPI.requestMoviesWithoutParameter();
+        allMovies = Movie.requestMoviesWithoutParameter();
         observableMovies.clear();
         observableMovies.addAll(allMovies); // add all movies to the observable list
         sortedState = SortedState.NONE;
@@ -125,7 +125,7 @@ public class HomeController implements Initializable {
         }
 
         observableMovies.clear();
-        observableMovies.addAll(MovieAPI.createMovies(MovieAPI.getUrlBuilder().toString())); //Call createMovies with the built URL
+        observableMovies.addAll(Movie.createMovies(MovieAPI.getUrlBuilder().toString())); //Call createMovies with the built URL
     }
 
     public void sortBtnClicked(ActionEvent actionEvent) {
