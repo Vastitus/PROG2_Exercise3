@@ -110,5 +110,4 @@ public class Movie {
         return createMovies(URL);
     }
 
-
 }
