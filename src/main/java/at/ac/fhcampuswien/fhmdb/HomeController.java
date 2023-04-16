@@ -152,7 +152,7 @@ public class HomeController implements Initializable {
 
         //If Genre is chosen, call filterByGenre and add result into observableMovies List
         if (genreComboBox.getValue() != null && genreComboBox.getValue() != "Filter by Genre" && genreComboBox.getValue() != "No filter") {
-            filteredMovies = filterByGenre((List<Movie>) observableMovies, (Genre) genreComboBox.getSelectionModel().getSelectedItem());
+            filteredMovies = filterByGenre(observableMovies, (Genre) genreComboBox.getSelectionModel().getSelectedItem());
             observableMovies.clear();
             observableMovies.addAll(filteredMovies);
         }
@@ -244,7 +244,7 @@ public class HomeController implements Initializable {
 
     public void filterMoviesBetweenYearsButtonClicked(ActionEvent actionEvent) {
 
-        if (!releaseYearTextField.getText().matches("[0-9]*") || releaseYearTextField.getText() == "" || releaseYearTextField.getText() == null) {
+        if (!releaseYearTextField.getText().matches("[0-9]*") || releaseYearTextField.getText() == "") {
             createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please enter a valid release year!");
         }  else if (Integer.parseInt(releaseYearTextField.getText()) > 2023) {
             createAlert(Alert.AlertType.WARNING, "Wrong Input", "The release year can't be in the future!");

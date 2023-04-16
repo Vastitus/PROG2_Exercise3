@@ -16,6 +16,9 @@ import java.util.List;
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -28,38 +31,28 @@ public class MovieAPI {
 
     //Makes an API request and returns the result in a JSONArray
     @Nullable
-    private static JSONArray apiRequest(String urlStringBuild) {
-        try {
-            URL url = new URL(urlStringBuild);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+    private static JSONArray apiRequest(String urlString) {
+            try {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(urlString)
+                        .addHeader("User-Agent", "http.agent")
+                        .build();
+                Response response = client.newCall(request).execute();
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Error: " + conn.getResponseCode());
+                if (!response.isSuccessful()) {
+                    throw new RuntimeException("Error: " + response.code());
+                }
+
+                String responseString = response.body().string();
+                JSONArray moviesJSONArray = new JSONArray(responseString);
+
+                return moviesJSONArray;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-            StringBuilder response = new StringBuilder();
-            String output;
-
-            while ((output = br.readLine()) != null) {
-                response.append(output);
-            }
-
-            conn.disconnect();
-
-            JSONArray moviesJSONArray = new JSONArray(response.toString());
-
-            return moviesJSONArray;
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-
-    }
 
     //Gets a URL from a request-Method, makes API-Request, builds the Movies and returns them as a list.
     @NotNull
