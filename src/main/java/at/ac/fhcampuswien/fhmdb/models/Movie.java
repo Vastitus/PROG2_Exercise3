@@ -74,11 +74,12 @@ public class Movie {
         return this.title.equals(other.title) && this.description.equals(other.description) && this.genres.equals(other.genres);
     }
 
+    //Returns an Array with all Genres
     public static Genre[] mapGenres(JSONArray genresArray) {
-        Genre[] genres = new Genre[genresArray.length()];
+        Genre[] genres = new Genre[genresArray.length()]; //Initialize a Genres Array with the length of the JSONArray
         for (int i = 0; i < genresArray.length(); i++) {
-            String genreString = genresArray.getString(i).toUpperCase();
-            genres[i] = Genre.valueOf(genreString);
+            String genreString = genresArray.getString(i).toUpperCase(); //Get String value of the current Element in genresArray
+            genres[i] = Genre.valueOf(genreString); //Convert the genreString into an Enum
         }
         return genres;
     }
@@ -103,11 +104,6 @@ public class Movie {
             ));
         }
         return movies;
-    }
-
-    //Get movies without parameter
-    public static List<Movie> requestMoviesWithoutParameter() {
-        return createMovies(URL);
     }
 
 }
