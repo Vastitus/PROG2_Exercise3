@@ -226,7 +226,7 @@ public class HomeController implements Initializable {
         } else if (Integer.parseInt(releaseYearTextField.getText()) < 1900) {
             createAlert(Alert.AlertType.WARNING, "Wrong Input", "Please don't choose a release year before 1900.");
         } else {
-            List<Movie> moviesFiltered = getMoviesBetweenYears(observableMovies, Integer.parseInt(releaseYearTextField.getText()), 2023);
+            List<Movie> moviesFiltered = getMoviesBetweenYears(allMovies, Integer.parseInt(releaseYearTextField.getText()), 2023);
 
             if (moviesFiltered.size() == 1) {
                 createAlert(Alert.AlertType.INFORMATION, "Movie released between...", moviesFiltered.size() +
