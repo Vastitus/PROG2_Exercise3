@@ -2,10 +2,14 @@ package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.json.JSONArray;
@@ -23,6 +27,10 @@ public class MovieCell extends ListCell<Movie> {
     private final Label rating = new Label();
     private final Label mainCast = new Label();
     private final Label directors = new Label();
+
+    private final Button showDetailsButton = new Button("Show Details");
+    private final Button watchlistButton = new Button("Add to Watchlist");
+
     private final VBox layout = new VBox(title, detail, genre, releaseYear, rating, mainCast, directors);
 
     @Override
@@ -91,7 +99,19 @@ public class MovieCell extends ListCell<Movie> {
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
-            layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+            layout.alignmentProperty().set(Pos.CENTER_LEFT);
+
+
+
+            // add buttons
+            watchlistButton.getStyleClass().add("background-yellow");
+            showDetailsButton.getStyleClass().add("background-yellow");
+
+            HBox buttonsLayout = new HBox(10, showDetailsButton, watchlistButton);
+
+            if (!layout.getChildren().contains(buttonsLayout)) {
+                layout.getChildren().add(buttonsLayout);
+            }
             setGraphic(layout);
         }
     }

@@ -260,6 +260,7 @@ public class HomeController implements Initializable {
         ratingComboBox.setValue(null);
         ratingComboBox.setPromptText("Filter by Rating");
         MovieAPI.setURLDefault();
+        directorTextField.setText("");
 
         observableMovies.clear();
         observableMovies.addAll(allMovies);
